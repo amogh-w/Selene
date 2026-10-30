@@ -129,6 +129,8 @@ namespace Selene
                 // the login layer (menu, profiles...) is up: its keys are its own (this class handler runs before the
                 // layer's, and moved the home row behind the menu)
                 if (LoginScene.IsActive) return;
+                // a window over Playnite (an add-on's dialog) is active: its keys are its own, nothing on the home or the page moves
+                if (DialogUp()) return;
                 // the keyboard copy of a pad press Selene already handled (it moved things a second time)
                 if (Ui.KeyIsPadCopy(e.Key == Key.Left ? "DPadLeft" : e.Key == Key.Right ? "DPadRight" : e.Key == Key.Up ? "DPadUp" : e.Key == Key.Down ? "DPadDown" : null) && (e.Key == Key.Left || e.Key == Key.Right || e.Key == Key.Up || e.Key == Key.Down || e.Key == Key.Enter || e.Key == Key.Escape)) { e.Handled = true; return; }
                 // the cards are still flying in: nothing moves yet
@@ -3653,6 +3655,9 @@ namespace Selene
                     // B answers it the safe way (No / Cancel); Playnite's own dialogs did nothing on B
                     if (answer == "B" && DialogLook.Back()) e.Cancel();
                     else if (DialogLook.Take(answer)) e.Cancel();   // (a dialog without the focus: the press is still its own)
+                    // an add-on's own window (UniPlaySong's song and download dialogs) that the keyboard focus is not in: the press can't reach it
+                    // through WPF (it reads the pad itself), and left alone it moved Selene's screen behind it
+                    else if (!ActiveDialogHasFocus()) e.Cancel();
                     return;
                 }
                 if (LoginScene.HandleButton(pressed)) { e.Cancel(); return; }
@@ -4093,6 +4098,19 @@ namespace Selene
             var mw = Application.Current.MainWindow;
             var list = mw != null ? FindByName(mw, "PART_ListGameItems") as ItemsControl : null;
             return list != null && list.Items.Count == 0;
+        }
+
+        // the window over Playnite's main one that is active has the keyboard focus inside it (its own presses reach it)
+        private static bool ActiveDialogHasFocus()
+        {
+            try
+            {
+                var main = Application.Current.MainWindow;
+                foreach (Window w in Application.Current.Windows)
+                    if (!ReferenceEquals(w, main) && w.IsVisible && w.IsActive) return w.IsKeyboardFocusWithin;
+            }
+            catch { }
+            return true;
         }
 
         public static bool DialogUp()
@@ -7068,7 +7086,7 @@ namespace Selene
                 // Playnite stays blank behind the game (restoring it there made Windows show that stale bright frame
                 // on the next Guide press); Activated fades it back in. Retry once, and if the game still didn't
                 // come forward, fade Playnite back in rather than leaving a black screen.
-                var verify = new System.Windows.Threading.DispatcherTimer { Interval = TimeSpan.FromMilliseconds(150) };
+                var verify = new System.Windows.Threading.DispatcherTimer { Interval = TimeSpan.FromMilliseconds(1100) };
                 int attempt = 0;
                 verify.Tick += (s, e) =>
                 {
@@ -7712,7 +7730,7 @@ namespace Selene
             pending = value;
             if (settle == null)
             {
-                settle = new System.Windows.Threading.DispatcherTimer { Interval = TimeSpan.FromMilliseconds(150) };
+                settle = new System.Windows.Threading.DispatcherTimer { Interval = TimeSpan.FromMilliseconds(1100) };
                 settle.Tick += (s, e) => { settle.Stop(); Load(pending); };
             }
             settle.Stop();

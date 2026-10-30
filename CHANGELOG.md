@@ -6,6 +6,13 @@ Selene (theme) and Selene Core (add-on) share one version number and are release
 
 - Music volume and Mute music (Selene settings > Sound & music) now control all music, UniPlaySong's included. UniPlaySong has its own volume and ignored Playnite's, so the start-up and home music played on with both set to off. Selene sets UniPlaySong's temporary level; its saved volume stays as it is. They moved here from Playnite's own Audio page.
 - Sound & music is in four sections: Music (volume, mute, songs for each game, ambient music, night music, and what is playing), Sounds (interface sounds and their volume, start-up, notification, menu), While you play (trailer sound, quiet loading screen) and Music setup (game songs download, song delay, Let Selene run the music). Start-up sound, Notification sound and Trailer sound moved here from their groups; saved choices carry over. Labels are in plainer words, and without UniPlaySong a line says where music comes from.
+- A Music card in the menu (Start) with Play / pause, Next song and Restart song for UniPlaySong, usable with the controller. The home's top bar can show the song playing (Show what is playing).
+- Sounds volume can be set to Off. With it Off, or Interface sounds off, Playnite's own move sound is silenced as well; before, only Selene's own sounds followed the setting.
+
+- Fixed: songs could get stuck on one track and a game's song often didn't start on its trailer card (only R3 on, then off, brought it in). Selene re-sent UniPlaySong's volume several times a second, which cut its fade-out short, and UniPlaySong only changes songs once that fade ends. The volume is now only sent when it changes.
+- Fixed: Mute music came back muted at every start. Playnite doesn't save that switch, so Selene keeps it now.
+- Fixed: with an add-on's own window open from Game options (UniPlaySong's download or song dialogs), the controller also moved Selene's page behind it.
+- The top bar's song name follows what is really playing (UniPlaySong's title followed the game under the cursor while the home music played on), and file names read as words.
 
 ## 1.4.0 - 2026-10-29
 

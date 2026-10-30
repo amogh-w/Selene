@@ -46,6 +46,15 @@ namespace Selene
         private int index, powerIndex;
         private bool leaving;
 
+        // the Music card's list (UniPlaySong's player), opened like the Power list; the third value is what A does
+        private static readonly object[][] MusicItems =
+        {
+            new object[] { 0xe037, "Play / pause", 0 },
+            new object[] { 0xe044, "Next song", 1 },
+            new object[] { 0xe042, "Restart song", 2 },
+        };
+        private bool musicList;
+
         private static readonly object[][] PowerItems =
         {
             new object[] { 0xef44, "Sleep", 0 },
@@ -81,8 +90,9 @@ namespace Selene
             items.Add(new Item { Icon = Ui.Icon(0xe3c9), Label = "Edit profile", Run = EditProfile });
             items.Add(new Item { Icon = Ui.Icon(0xe40a), Label = "Theme", Run = ChangeTheme });
             items.Add(new Item { Icon = Ui.Icon(0xe429), Label = "Selene settings", Badge = Background.Any, Run = () => LoginScene.Show(new SettingsScreen(true), 1) });   // (the dot: something still running behind the scenes)
+            if (MusicLevel.Installed()) items.Add(new Item { Icon = Ui.Icon(0xe405), Label = "Music", Run = () => OpenPower(true) });   // UniPlaySong's play, pause and skip
             if (Features.On("soundmenu")) items.Add(new Item { Icon = Ui.Icon(0xe050), Label = "Sound", Sub = SystemAudio.Summary(), Run = OpenSound });   // Windows' volume and output
-            items.Add(new Item { Icon = Ui.Icon(0xe8ac), Label = "Power", Run = OpenPower });
+            items.Add(new Item { Icon = Ui.Icon(0xe8ac), Label = "Power", Run = () => OpenPower() });
             // the add-ons' own menus (Playnite's Extensions menu): audio switchers, metadata tools...
             items.Add(new Item { Icon = Ui.Icon(0xe87b), Picture = Ui.Glyph(Ui.Icon(0xe87b), Ui.Icons, 34, Ink.Brush("SeleneInkColor"), true), Label = "Extensions", Run = () => LoginScene.Show(GameOptionsScreen.Extensions(), 1) });   // (the piece centred by its body, not its knobs)
             items.Add(new Item { Icon = Ui.Icon(0xe8b8), Label = "Playnite settings", Run = () => { if (Features.On("playnitesettings")) LoginScene.Show(new PlayniteSettingsScreen(), 1); else Later(PlayniteMenu.OpenSettings); } });
@@ -189,11 +199,12 @@ namespace Selene
         }
 
         // ---- Power: a short list above its icon ----
-        private void OpenPower()
+        private void OpenPower(bool music = false)
         {
+            musicList = music;
             var list = new StackPanel();
             powerRows.Clear();
-            foreach (var p in PowerItems)
+            foreach (var p in music ? MusicItems : PowerItems)
             {
                 var line = new StackPanel { Orientation = Orientation.Horizontal };
                 line.Children.Add(new TextBlock { Text = Ui.Icon((int)p[0]), FontFamily = Ui.Icons, FontSize = 24, Foreground = Ink.Brush("SeleneInkColor"), VerticalAlignment = VerticalAlignment.Center });
@@ -236,6 +247,13 @@ namespace Selene
         {
             if (b == "B") { Ui.Back(); ClosePower(); return; }
             if (b == "Start") { leaving = true; Ui.Back(); if (!LoginScene.CloseMenuOver()) LoginScene.Finish(); return; }
+            if (b == "A" && musicList)
+            {
+                Ui.Confirm();
+                var id = (int)MusicItems[powerIndex][2];
+                MusicLevel.Control(id == 0 ? "TogglePlayPauseInternal" : id == 1 ? "SkipToNextSong" : "RestartCurrentSong");   // the list stays up: skip again
+                return;
+            }
             if (b == "A")
             {
                 Ui.Confirm();
