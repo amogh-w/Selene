@@ -44,7 +44,12 @@ namespace Selene
             { "Spotlight", new[] {
                 new[] { "Row", "steadyhold", "pickscroll", "rowedges", "filtertabs", "shade", "idle" },
                 new[] { "Cards", "cardactivity", "activitysessions", "cardcaptures", "cardachievements", "cardsurprise", "cardnews", "newsfeeds", "cardpictures" },
-                new[] { "Trailers and downloads", "trailerdelay", "trailersound", "trailerdownload", "artdownload", "screenshotsdownload" } } },
+                new[] { "Trailers and downloads", "trailerdelay", "trailerdownload", "artdownload", "screenshotsdownload" } } },
+            { "Sound & music", new[] {
+                new[] { "Music", "musicvolume", "musicmuted", "upsgame", "upsdefault", "upsnight", "nowplaying" },
+                new[] { "Sounds", "sounds", "soundvolume", "startsound", "notifysound", "soundmenu" },
+                new[] { "While you play", "trailersound", "launchquiet" },
+                new[] { "Music setup", "music", "songsetup", "songsettle" } } },
             { "Games", new[] {
                 new[] { "Launching", "launchstyle", "launchmotion", "launchshade", "loadingscreen", "aftergame", "guidefocus" },
                 new[] { "While playing", "freeze", "powerconfirm", "tray", "quietbackups" },
@@ -82,7 +87,7 @@ namespace Selene
         // changed from how Selene ships (another add-on's own setting and the rows that do something don't count)
         private static bool IsChanged(Features.Option o)
         {
-            if (o.Action != null || o.Get != null) return false;
+            if (o.Action != null || o.Get != null || o.GetValue != null) return false;
             return o.IsChoice ? Features.Value(o.Key) != o.Default : Features.On(o.Key) != o.DefaultOn;
         }
 
@@ -569,6 +574,7 @@ namespace Selene
                 if (DownloadConsent.IsControlled(key)) DownloadConsent.Changed(key);
                 if (key == "brand") Brand.Apply();
                 if (key == "topprofile") TopProfile.Refresh();
+                if (key.StartsWith("nowplaying")) NowPlayingBar.Refresh();
                 if (key == "hltb" || key == "achievements" || key == "rowedges" || key == "collectioninfo" || key == "collectionhints") SeleneShell.ApplyNowPlaying();
                 if (key == "translatecollect") { Lang.Collect(Features.On(key)); if (Features.On(key)) Ui.Notice("Phrases are saved to \"Selene phrases.txt\" on your Desktop."); }
                 Ui.Key();

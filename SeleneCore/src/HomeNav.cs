@@ -80,6 +80,7 @@ namespace Selene
             // Playnite re-filters the whole library when the preset changes (over a second on a big one): done once after
             // start-up, not on the first press of View
             StartupWork.AfterHome("collection filter", ApplyCollectionFilter);
+            MusicLevel.Start();   // Playnite's music volume / muted reach UniPlaySong too
             IdleScreen.Install();  // the idle screen's clock
             Ui.DevFrameLog();   // %TEMP%\selene-dev-frames: frames per second in the log
             Ui.StartupFrameLog();   // the first seconds: long frames in the log (the intro must not stutter)
@@ -2537,7 +2538,7 @@ namespace Selene
 
         // UniPlaySong's live settings, the object its player reads: found inside the add-on like the legacy theme did
         // (asking Playnite for the add-on's settings can hand back a copy, so changes never reached the player)
-        private static object LiveUps()
+        internal static object LiveUps()
         {
             if (upsSettings != null || Api == null) return upsSettings;
             foreach (var plugin in Api.Addons.Plugins)
@@ -2964,6 +2965,31 @@ namespace Selene
         private static DateTime quietUntil;
         private static System.Windows.Threading.DispatcherTimer quietTimer;
 
+        // Selene's "Interface sounds" off, or "Sounds volume" at Off: Playnite's move sound is emptied for good, not only for a moment
+        internal static bool MoveSilenced() { return !Features.On("sounds") || Features.Number("soundvolume") <= 0; }
+
+        internal static void SyncMoveSound()
+        {
+            try
+            {
+                if (navigateSound == null)
+                {
+                    foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
+                    {
+                        var t = asm.GetType("Playnite.FullscreenApp.FullscreenApplication", false);
+                        if (t == null) continue;
+                        navigateSound = t.GetProperty("NavigateSound", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+                        break;
+                    }
+                    if (navigateSound == null) return;
+                }
+                var current = (IntPtr)navigateSound.GetValue(null, null);
+                if (MoveSilenced()) { if (current != IntPtr.Zero) { savedNavigateSound = current; navigateSound.SetValue(null, IntPtr.Zero, null); } }
+                else if (current == IntPtr.Zero && savedNavigateSound != IntPtr.Zero && DateTime.Now >= quietUntil) navigateSound.SetValue(null, savedNavigateSound, null);
+            }
+            catch (Exception ex) { Log("move sound: " + ex.Message); }
+        }
+
         public static void QuietFocus(int ms)
         {
             try
@@ -2999,7 +3025,7 @@ namespace Selene
                             return;
                         }
                         quietTimer.Stop();
-                        if (savedNavigateSound != IntPtr.Zero && (IntPtr)navigateSound.GetValue(null, null) == IntPtr.Zero) navigateSound.SetValue(null, savedNavigateSound, null);
+                        if (!MoveSilenced() && savedNavigateSound != IntPtr.Zero && (IntPtr)navigateSound.GetValue(null, null) == IntPtr.Zero) navigateSound.SetValue(null, savedNavigateSound, null);
                     };
                 }
                 quietTimer.Start();
@@ -3031,6 +3057,7 @@ namespace Selene
                     }
                     if (playNavigate == null || playActivate == null) return false;
                 }
+                if (MoveSilenced()) return true;
                 if (confirm) { playActivate.Invoke(null, null); return true; }
                 var current = navigateSound != null ? (IntPtr)navigateSound.GetValue(null, null) : IntPtr.Zero;
                 if (current == IntPtr.Zero && savedNavigateSound == IntPtr.Zero) return false;   // Playnite has no tick loaded yet (first setup): Selene's own plays
@@ -3047,7 +3074,7 @@ namespace Selene
         {
             if (quietUntil == DateTime.MinValue) return;
             quietUntil = DateTime.MinValue;
-            try { if (navigateSound != null && savedNavigateSound != IntPtr.Zero && (IntPtr)navigateSound.GetValue(null, null) == IntPtr.Zero) navigateSound.SetValue(null, savedNavigateSound, null); }
+            try { if (!MoveSilenced() && navigateSound != null && savedNavigateSound != IntPtr.Zero && (IntPtr)navigateSound.GetValue(null, null) == IntPtr.Zero) navigateSound.SetValue(null, savedNavigateSound, null); }
             catch (Exception ex) { Log("quiet focus: " + ex.Message); }
         }
 

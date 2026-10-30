@@ -4,6 +4,9 @@ Selene (theme) and Selene Core (add-on) share one version number and are release
 
 ## Unreleased
 
+- Music volume and Mute music (Selene settings > Sound & music) now control all music, UniPlaySong's included. UniPlaySong has its own volume and ignored Playnite's, so the start-up and home music played on with both set to off. Selene sets UniPlaySong's temporary level; its saved volume stays as it is. They moved here from Playnite's own Audio page.
+- Sound & music is in four sections: Music (volume, mute, songs for each game, ambient music, night music, and what is playing), Sounds (interface sounds and their volume, start-up, notification, menu), While you play (trailer sound, quiet loading screen) and Music setup (game songs download, song delay, Let Selene run the music). Start-up sound, Notification sound and Trailer sound moved here from their groups; saved choices carry over. Labels are in plainer words, and without UniPlaySong a line says where music comes from.
+
 ## 1.4.0 - 2026-10-29
 
 - The admin helper (SeleneHelper.exe) is gone. Older versions set it up through a scheduled task with admin rights, and it had real security problems, so it's out for good. Updating replaces it with a dummy file that does nothing. We never confirmed exactly why some antivirus tools flagged 1.3.1, so if yours still warns about this version, please open an issue.
