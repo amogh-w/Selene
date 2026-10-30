@@ -46,7 +46,7 @@ namespace Selene
                 new[] { "Cards", "cardactivity", "activitysessions", "cardcaptures", "cardachievements", "cardsurprise", "cardnews", "newsfeeds", "cardpictures" },
                 new[] { "Trailers and downloads", "trailerdelay", "trailerdownload", "artdownload", "screenshotsdownload" } } },
             { "Sound & music", new[] {
-                new[] { "Music", "musicvolume", "musicmuted", "upsgame", "upsdefault", "upsnight", "nowplaying" },
+                new[] { "Music", "musicvolume", "musicmuted", "upsgame", "upsdefault", "upsspotify", "upsnight", "nowplaying" },
                 new[] { "Sounds", "sounds", "soundvolume", "startsound", "notifysound", "soundmenu" },
                 new[] { "While you play", "trailersound", "launchquiet" },
                 new[] { "Music setup", "music", "songsetup", "songsettle" } } },
