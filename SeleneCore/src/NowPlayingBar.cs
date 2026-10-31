@@ -20,7 +20,7 @@ namespace Selene
             if (slot == null || text == null) { HomeNav.Log("now playing: no slot"); slot = null; return; }
             // the song changes on its own: looked at twice a second (one timer only, if the view is attached again)
             if (watch != null) watch.Stop();
-            watch =new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
+            watch = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
             watch.Tick += (s, e) => Refresh();
             watch.Start();
             Refresh();

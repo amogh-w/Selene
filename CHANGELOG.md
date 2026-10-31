@@ -8,12 +8,73 @@ Selene (theme) and Selene Core (add-on) share one version number and are release
 - Sound & music is in four sections: Music (volume, mute, songs for each game, ambient music, night music, and what is playing), Sounds (interface sounds and their volume, start-up, notification, menu), While you play (trailer sound, quiet loading screen) and Music setup (game songs download, song delay, Let Selene run the music). Start-up sound, Notification sound and Trailer sound moved here from their groups; saved choices carry over. Labels are in plainer words, and without UniPlaySong a line says where music comes from.
 - A Music card in the menu (Start) with Play / pause, Next song and Restart song for UniPlaySong, usable with the controller. The home's top bar can show the song playing (Show what is playing).
 - Sounds volume can be set to Off. With it Off, or Interface sounds off, Playnite's own move sound is silenced as well; before, only Selene's own sounds followed the setting.
-
 - Spotify as ambient music (Sound & music > Music): your Spotify plays on the home, in the menu and on games without a song, through UniPlaySong's Spotify source. Music volume and Mute set the Spotify app's volume while it is the ambient (its own level comes back when you turn it off or close Playnite), and the Music card's buttons go to Spotify through UniPlaySong's Spotify control (a pause holds). Spotify gives way to a game's song or a trailer's sound at once instead of up to 2 s later.
 - Fixed: songs could get stuck on one track and a game's song often didn't start on its trailer card (only R3 on, then off, brought it in). Selene re-sent UniPlaySong's volume several times a second, which cut its fade-out short, and UniPlaySong only changes songs once that fade ends. The volume is now only sent when it changes.
 - Fixed: Mute music came back muted at every start. Playnite doesn't save that switch, so Selene keeps it now.
 - Fixed: with an add-on's own window open from Game options (UniPlaySong's download or song dialogs), the controller also moved Selene's page behind it.
 - The top bar's song name follows what is really playing (UniPlaySong's title followed the game under the cursor while the home music played on), and file names read as words.
+
+## 1.5.0 - 2026-10-31
+
+- Reduce the media download confirmation to two lines and widen its dialog.
+- Opening a trailer card no longer makes the game's song stop and start again.
+- No red dot on Sound & music or Spotlight for downloads that Games > Download game media owns.
+- While media downloads run, A on Games > Download game media does nothing; Stop is offered once they finish.
+- Spotlight's logo eases to its smaller size as a trailer card opens (it jumped).
+- Download progress stays below 100% while UniPlaySong is still landing songs; Games > Download game media shows art, songs and details as a small stats strip (count and state each), with games that have no song found counted.
+- Game songs come with trailers by default; browsing plays the default music. Sound & music > Game music without trailers turns songs-while-browsing back on.
+- Collection sizes logos by their shape: tall logos (Monster Hunter Wilds, Path of Exile 2) grow instead of looking small next to wide ones (Look > Even logo sizes).
+- First-run setup asks for a SteamGridDB key for square tiles right after the setup check (Paste or Skip; not shown when a key is already available). Skipped, Look > SteamGridDB key keeps a red dot until a key is added.
+- Install all downloads Playnite's own add-ons (the store libraries) from their GitHub releases when playnite.link is the only other source (it served them at ~14 KB/s); Playnite updates them to the newest version later.
+- Xbox and Game Pass games: once the Xbox library is installed, Selene says once where to sign Playnite in to Xbox (Playnite Desktop: Library > Configure integrations > Xbox); the setup check keeps an Xbox sign-in card (Advanced > Xbox sign-in).
+- Collection tiles are 2:3 like the covers, so none lose their top and bottom; this sets Playnite's grid ratio to 2:3 (Collection > 2:3 covers).
+- Games no store installed: with no game folder set, Selene looks in a Games folder at the root of each drive (Advanced > Find games in Games folders).
+- The setup check offers Playnite's library add-ons for the stores installed on this PC (Steam, Epic, GOG, Xbox, EA app, Ubisoft Connect, Battle.net, itch.io), so a fresh Playnite started in fullscreen gets its games with Install all (Advanced > Offer store libraries).
+- Collection: the last cover is no longer cut off at the right edge when it's selected.
+- Who's playing: profile pictures are no longer cut off at the right and bottom edge.
+- No progress cards while downloads, achievement checks and library updates run in the background; one short note when the game media downloads finish (Notifications > Progress cards brings the cards back).
+- Collection: a game without a cover (Control from Epic) no longer shows the cover of the game its tile was reused from; it shows the default cover until its own arrives.
+- Details lookups match a store edition by name too ("Control" is "CONTROL Ultimate Edition" on Steam), so such games get their cover.
+- Your captures on a game's page get their thumbnails (they only came if the Captures screen had made them before).
+- Spotlight > Captures folders: add or remove a folder with your screenshots and clips from Selene settings (Windows' folder picker).
+- Spotlight cards switched on or off in Selene settings leave or come back to the row at once (a card switched off stayed until Spotlight was opened again; one switched back on never returned).
+- The menu has Close <game> for the running game at its start, hidden games too (#67; Games > Close game in the menu).
+- Square tile art from SteamGridDB (Look > Square art from SteamGridDB), downloaded with the art for games without a square picture. Needs a free SteamGridDB key: paste it in Look > SteamGridDB key or on the add-on page, or Selene uses the SteamGridDB metadata add-on's key.
+- Collection shows the same game art as Spotlight (it showed Playnite's background, often a different picture). Collection > Same art as Spotlight restores Playnite's background; applies after restarting Playnite.
+- A background replaced by a sharper download shows sharp right away (the old picture stayed in memory until a restart).
+- Newer Steam games (like 007 First Light) get their cover when details are filled in: Steam keeps their pictures under addresses the old lookup missed. Every game is checked once more, and a cover that arrives shows on its tile right away.
+- Collection covers are decoded at the size they're drawn (they were decoded at 224 px and looked blurry).
+- Spotlight and Collection backgrounds stay sharp on high-DPI screens (a 4K screen at 300% decoded them at 1280 px). Downloaded backgrounds use Steam's double-size art; backgrounds copied earlier from Steam's small cache are fetched once in double size while art downloads are on (Games > Download game media).
+
+- Shorten settings captions, download dialogs and progress messages. Remove redundant action labels from settings rows.
+- Show Selene's default background in previews and game-art gaps. Look > Selene background fallback controls this correction.
+- Suppress extra navigation ticks when opening Details. Sound & music > Quiet details transitions controls this correction.
+
+- Games > Download game media combines missing library art, covers, trailers, screenshots and songs into one explicit opt-in. The previous individual controls are hidden in Selene's settings; Advanced > Combined media downloads restores them. No inherited permission is expanded automatically, and UniPlaySong is still required for game songs.
+- Download progress shows inline in the Games setting. Leaving settings keeps work running; the Games row offers an explicit Stop future downloads confirmation. The bar averages art, songs and details (the song tools' download counts toward songs) and only reaches 100% once all of them are done.
+- Smart-cropped artwork keeps its proportions while a card expands for a trailer, fixing the stretched still image before playback. Look > Keep trailer-card artwork proportional restores the old stretch when off; restart Playnite to refresh already-loaded cards.
+
+- Games with multiple declared play actions wait for Playnite's action chooser before raising Selene's loading cover (#43/#80). Games > Keep launch choices above loading restores the immediate cover when off. Plugin-only action lists and physical controller focus still need confirmation.
+
+- Game songs no longer require an open trailer when Background music is enabled (#37/#47/#88). Sound & music > Game music without trailers restores the previous default-only browsing policy when off. UniPlaySong still controls actual playback, missing-song fallback and hover delay.
+
+- Game options can read and change the signed-in profile's Favorites, matching Spotlight instead of silently changing Playnite's shared flag (#39). Spotlight > Use the same Favorites in game options restores the previous behavior when off. Collection/user-created preset semantics are unchanged in this correction.
+
+- Platform fields now show the game's platform metadata instead of its store/source (#49). Spotlight > Use game platform metadata restores the previous source display when switched off.
+- The Sound panel and its menu caption stay in sync with volume/mute changes while open (#60), with background reads stopped when the panel closes. Sound & music > Keep volume display in sync controls this correction.
+- Activity can show whole covers without cutting off square artwork (#58). Look > Keep whole covers in Activity restores the previous crop when switched off.
+- Spotlight logos stay within their own row while an expanded trailer plays (#46/#95). Look > Keep logos below trailers controls the spacing correction.
+- Picking a language no longer asks to restart Playnite when nothing would change, like English on an English Playnite at first setup (Look > Ask to restart only when the language changes; off asks after every change).
+- The Install all question in setup is short: Install 8 add-ons? with Not now and Install all, without the add-on list and explanation (Advanced > Short add-on question restores them).
+- Selene ships a default background music, "Selene OST" (credited in THIRD-PARTY-NOTICES). When UniPlaySong has no default music file chosen, Selene sets it once (Sound & music > Selene OST as default music). A file you chose stays.
+- When your library has games but Selene has no art for them yet, it asks once: "Get art for your games?" A yes allows covers, backgrounds, logos, screenshots, trailers for games you select, and missing details, and tells you where they come from and are saved. Not now leaves everything off, puts a red dot on Selene settings, and the question stays in Games > Get art for your games until you say yes (Games > Offer to get art for a new library turns the first question off).
+- The Scroll hint on game pages is a round badge with a controller, like the A, B and Y badges (#96). Look > Round game-page button badges restores the wider oval. Keyboard and mouse labels still widen it.
+- Game-page single-button badges use round proportions (#93), and the capture player's progress bar follows the current viewport width (#94). Both corrections have switches under Look.
+- Spotlight can honor Playnite's fullscreen quick-selection visibility for filter presets (#71). Spotlight > Honor fullscreen preset visibility restores the previous all-presets list when switched off; this does not add a new tab-scrolling feature.
+
+- Pause ambient motion and trailer players while minimized, in the tray or behind a running game (Advanced > Pause when out of view). Thanks to kunit1 for the idea (#62). Decorative background motion has an optional calmer cadence; navigation animations retain their timing.
+- Move periodic local-game process scanning off the interface thread, decode covers for their selected size, and bound cached cover pixels as well as entry count. Achievement setup waits while a game is launching/running or Selene is hidden.
+- Add repeatable developer performance scenarios and regression checks.
 
 ## 1.4.0 - 2026-10-29
 
@@ -449,3 +510,4 @@ Selene (theme) and Selene Core (add-on) share one version number and are release
 
 - First build of Selene, rebuilt from the ground up on Playnite's fullscreen template, with its companion add-on
   Selene Core.
+
